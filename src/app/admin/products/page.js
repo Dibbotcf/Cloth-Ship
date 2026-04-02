@@ -7,12 +7,14 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
       const res = await fetch('/api/admin/products');
       if (!res.ok) throw new Error('Database not connected. Please ensure MySQL is running and configured.');
@@ -26,19 +28,22 @@ export default function AdminProductsPage() {
   };
 
   const deleteProduct = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this product?')) return;
-    
+    if (!window.confirm('Are you sure you want to permanently delete this product?')) return;
+    setDeletingId(id);
     try {
       const res = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' });
+      const body = await res.json();
       if (res.ok) {
-        setProducts(prev => prev.filter(p => p.id !== id));
-        alert('Product successfully deleted!');
+        // Force re-fetch to get fresh list
+        await fetchProducts();
+        alert('✅ Product deleted successfully!');
       } else {
-        const errorData = await res.json();
-        alert('Failed to delete product: ' + (errorData.error || 'Unknown error'));
+        alert('❌ Failed to delete: ' + (body.error || 'Unknown error'));
       }
     } catch (err) {
-      alert('Error deleting product. Please check your connection.');
+      alert('❌ Network error. Check DB connection.');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -51,45 +56,77 @@ export default function AdminProductsPage() {
 
       <div className={styles.card}>
         {loading ? (
-          <p>Loading products...</p>
+          <p style={{ padding: '20px', color: '#666' }}>Loading products...</p>
         ) : error ? (
           <div style={{ color: '#c62828', padding: '20px', background: '#ffebee', borderRadius: '4px' }}>
-            <h3 style={{ marginBottom: '8px' }}>Database Error</h3>
+            <h3 style={{ marginBottom: '8px' }}>⚠️ Database Error</h3>
             <p>{error}</p>
-            <p style={{ marginTop: '10px', fontSize: '12px' }}>Please import the provided `clothship.sql` file into your MySQL database and ensure `.env` has the correct credentials.</p>
           </div>
         ) : products.length === 0 ? (
-          <p>No products found in the database. Add one to get started.</p>
+          <p style={{ padding: '20px', color: '#666' }}>No products found. <Link href="/admin/products/new" style={{ color: 'var(--color-primary)' }}>Add your first product →</Link></p>
         ) : (
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Image</th>
+                <th style={{ width: '50px' }}>ID</th>
+                <th style={{ width: '70px' }}>Image</th>
                 <th>Name</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th style={{ width: '140px' }}>Category</th>
+                <th style={{ width: '110px' }}>Price</th>
+                <th style={{ width: '120px' }}>Status</th>
+                <th style={{ width: '120px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {products.map(product => (
                 <tr key={product.id}>
-                  <td>{product.id}</td>
+                  <td style={{ color: '#999', fontSize: '12px' }}>{product.id}</td>
                   <td>
-                    <img src={product.image} alt={product.name} style={{ width: '40px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} />
+                    {product.image ? (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        style={{ width: '44px', height: '54px', objectFit: 'cover', borderRadius: '6px', border: '1px solid #eee', display: 'block' }}
+                        onError={e => { e.target.style.display = 'none'; }}
+                      />
+                    ) : (
+                      <div style={{ width: '44px', height: '54px', background: '#f0f0f0', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>📦</div>
+                    )}
                   </td>
-                  <td><strong>{product.name}</strong></td>
-                  <td style={{ textTransform: 'capitalize' }}>{product.category}</td>
-                  <td>৳{product.price.toLocaleString()}</td>
                   <td>
-                    {product.is_featured === 1 && <span style={{ background: '#e3f2fd', color: '#1565c0', padding: '4px 8px', borderRadius: '4px', fontSize: '11px', marginRight: '4px' }}>Featured</span>}
-                    {product.is_new === 1 && <span style={{ background: '#e8f5e9', color: '#2e7d32', padding: '4px 8px', borderRadius: '4px', fontSize: '11px' }}>New</span>}
+                    <strong style={{ fontSize: '14px' }}>{product.name}</strong>
+                    {product.fabric && <div style={{ fontSize: '11px', color: '#999', marginTop: '2px' }}>{product.fabric}</div>}
                   </td>
-                  <td className={styles.actions}>
-                    <Link href={`/admin/products/edit/${product.id}`} className={styles.editBtn}>Edit</Link>
-                    <button onClick={() => deleteProduct(product.id)} className={styles.deleteBtn}>Delete</button>
+                  <td style={{ textTransform: 'capitalize', fontSize: '13px', color: '#555' }}>
+                    {product.category.replace(/-/g, ' ')}
+                  </td>
+                  <td>
+                    <strong style={{ color: 'var(--color-primary)' }}>৳{parseFloat(product.price).toLocaleString()}</strong>
+                    {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
+                      <div style={{ fontSize: '11px', color: '#999', textDecoration: 'line-through' }}>৳{parseFloat(product.original_price).toLocaleString()}</div>
+                    )}
+                  </td>
+                  <td>
+                    <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                      {product.is_featured === 1 && (
+                        <span style={{ background: '#e3f2fd', color: '#1565c0', padding: '3px 7px', borderRadius: '4px', fontSize: '10px', fontWeight: '600' }}>Featured</span>
+                      )}
+                      {product.is_new === 1 && (
+                        <span style={{ background: '#e8f5e9', color: '#2e7d32', padding: '3px 7px', borderRadius: '4px', fontSize: '10px', fontWeight: '600' }}>New</span>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <Link href={`/admin/products/edit/${product.id}`} className={styles.editBtn}>Edit</Link>
+                      <button
+                        onClick={() => deleteProduct(product.id)}
+                        disabled={deletingId === product.id}
+                        className={styles.deleteBtn}
+                      >
+                        {deletingId === product.id ? '...' : 'Delete'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

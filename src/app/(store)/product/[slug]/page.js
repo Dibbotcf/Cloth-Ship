@@ -84,7 +84,7 @@ export default function ProductDetailPage() {
         <div className={styles.gallery}>
           <div className={styles.mainImage}>
             <img src={product.image} alt={product.name} className={styles.mainImg} />
-            {product.isNew && <span className={styles.badge}>New</span>}
+            {(product.is_new === 1 || product.is_new === true) && <span className={styles.badge}>New</span>}
           </div>
         </div>
 
@@ -93,11 +93,11 @@ export default function ProductDetailPage() {
           <span className={styles.category}>{product.category.replace(/-/g, ' ')}</span>
           <h1 className={styles.productName}>{product.name}</h1>
           <div className={styles.pricing}>
-            <span className={styles.price}>৳{product.price.toLocaleString()}</span>
-            {product.originalPrice > product.price && (
+            <span className={styles.price}>৳{parseFloat(product.price).toLocaleString()}</span>
+            {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
               <>
-                <span className={styles.originalPrice}>৳{product.originalPrice.toLocaleString()}</span>
-                <span className={styles.discount}>-{Math.round((1 - product.price / product.originalPrice) * 100)}% OFF</span>
+                <span className={styles.originalPrice}>৳{parseFloat(product.original_price).toLocaleString()}</span>
+                <span className={styles.discount}>-{Math.round((1 - parseFloat(product.price) / parseFloat(product.original_price)) * 100)}% OFF</span>
               </>
             )}
           </div>

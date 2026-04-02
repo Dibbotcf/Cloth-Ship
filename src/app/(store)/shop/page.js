@@ -45,9 +45,11 @@ export default function ShopPage() {
 
   const addToCart = (product) => {
     const cart = JSON.parse(localStorage.getItem('clothship_cart') || '[]');
+    let sizes = product.sizes;
+    if (typeof sizes === 'string') { try { sizes = JSON.parse(sizes); } catch (e) { sizes = ['Free Size']; } }
     const existing = cart.find(i => i.id === product.id);
     if (existing) existing.quantity++;
-    else cart.push({ ...product, quantity: 1, selectedSize: product.sizes[0] });
+    else cart.push({ ...product, quantity: 1, selectedSize: Array.isArray(sizes) ? sizes[0] : 'Free Size', sizes });
     localStorage.setItem('clothship_cart', JSON.stringify(cart));
     window.dispatchEvent(new Event('cart-updated'));
   };
@@ -132,11 +134,11 @@ export default function ShopPage() {
           ) : (
             filtered.map(product => (
               <div key={product.id} className={styles.card}>
-                <Link href={`/product/${product.slug}`} className={styles.cardImageWrap}>
-                  <img src={product.image} alt={product.name} className={styles.cardImage} />
-                  {product.isNew && <span className={styles.badge}>New</span>}
-                  {product.originalPrice > product.price && (
-                    <span className={styles.badgeSale}>-{Math.round((1 - product.price / product.originalPrice) * 100)}%</span>
+                  <Link href={`/product/${product.slug}`} className={styles.cardImageWrap}>
+                  <img src={product.image || '/images/placeholder.png'} alt={product.name} className={styles.cardImage} />
+                  {(product.is_new === 1) && <span className={styles.badge}>New</span>}
+                  {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
+                    <span className={styles.badgeSale}>-{Math.round((1 - parseFloat(product.price) / parseFloat(product.original_price)) * 100)}%</span>
                   )}
                 </Link>
                 <div className={styles.cardHover}>
@@ -146,9 +148,9 @@ export default function ShopPage() {
                   <span className={styles.cardCategory}>{product.category.replace(/-/g, ' ')}</span>
                   <Link href={`/product/${product.slug}`} className={styles.cardName}>{product.name}</Link>
                   <div className={styles.cardPricing}>
-                    <span className={styles.cardPrice}>৳{product.price.toLocaleString()}</span>
-                    {product.originalPrice > product.price && (
-                      <span className={styles.cardOriginal}>৳{product.originalPrice.toLocaleString()}</span>
+                    <span className={styles.cardPrice}>৳{parseFloat(product.price).toLocaleString()}</span>
+                    {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
+                      <span className={styles.cardOriginal}>৳{parseFloat(product.original_price).toLocaleString()}</span>
                     )}
                   </div>
                 </div>
