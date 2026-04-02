@@ -1,0 +1,82 @@
+export const products = [
+  {
+    id: 1, slug: 'royal-crimson-silk-saree',
+    name: 'Royal Crimson Silk Saree', price: 8500, originalPrice: 12000,
+    category: 'sarees', gender: 'women', fabric: 'Silk', occasion: 'Wedding',
+    colors: ['Crimson', 'Gold'], sizes: ['Free Size'],
+    image: '/images/products/saree-red.png', hoverImage: '/images/products/saree-red.png',
+    description: 'A breathtaking crimson silk saree with intricate gold zari work, perfect for weddings and grand celebrations.',
+    story: 'Handwoven by master artisans from Rajshahi, this saree takes over 15 days to complete. Each motif tells a story of Bengali heritage.',
+    material: '100% Pure Silk with Gold Zari border. Dry clean only.',
+    isNew: true, isFeatured: true,
+  },
+  {
+    id: 2, slug: 'ivory-elegance-panjabi',
+    name: 'Ivory Elegance Panjabi', price: 3200, originalPrice: 4500,
+    category: 'panjabis', gender: 'men', fabric: 'Cotton', occasion: 'Casual',
+    colors: ['Ivory', 'Gold'], sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    image: '/images/products/panjabi-white.png', hoverImage: '/images/products/panjabi-white.png',
+    description: 'A premium cotton panjabi with subtle gold embroidery on collar and cuffs.',
+    story: 'Crafted from the finest Comilla cotton, this panjabi embodies understated elegance for the modern gentleman.',
+    material: '100% Premium Cotton. Machine wash gentle cycle.',
+    isNew: true, isFeatured: true,
+  },
+  {
+    id: 3, slug: 'royal-blue-embroidered-kurta',
+    name: 'Royal Blue Embroidered Kurta', price: 2800, originalPrice: 3800,
+    category: 'kurtas-women', gender: 'women', fabric: 'Cotton Blend', occasion: 'Festival',
+    colors: ['Royal Blue', 'Silver'], sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    image: '/images/products/kurta-blue.png', hoverImage: '/images/products/kurta-blue.png',
+    description: 'An elegant royal blue kurta with silver thread embroidery and mirror work.',
+    story: 'This kurta draws inspiration from Mughal architecture, featuring geometric patterns that echo the grandeur of ancient palaces.',
+    material: 'Cotton blend with silver threadwork. Hand wash recommended.',
+    isNew: true, isFeatured: true,
+  },
+  {
+    id: 4, slug: 'emerald-garden-salwar-kameez',
+    name: 'Emerald Garden Salwar Kameez', price: 4200, originalPrice: 5500,
+    category: 'salwar-kameez', gender: 'women', fabric: 'Georgette', occasion: 'Festival',
+    colors: ['Emerald Green', 'Gold'], sizes: ['S', 'M', 'L', 'XL'],
+    image: '/images/products/salwar-green.png', hoverImage: '/images/products/salwar-green.png',
+    description: 'An elegant emerald green salwar kameez set with gold thread embroidery.',
+    story: 'Inspired by the lush gardens of Bengal, this ensemble brings nature\'s elegance to your wardrobe.',
+    material: 'Premium Georgette with gold zari work. Dry clean recommended.',
+    isNew: false, isFeatured: true,
+  },
+  {
+    id: 5, slug: 'heritage-maroon-waistcoat',
+    name: 'Heritage Maroon Waistcoat', price: 2500, originalPrice: 3200,
+    category: 'waistcoats', gender: 'men', fabric: 'Silk Blend', occasion: 'Wedding',
+    colors: ['Maroon', 'Gold'], sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    image: '/images/products/waistcoat-maroon.png', hoverImage: '/images/products/waistcoat-maroon.png',
+    description: 'A premium maroon silk waistcoat with gold embroidery and decorative buttons.',
+    story: 'This waistcoat bridges the gap between tradition and modernity, bringing regal charm to any outfit.',
+    material: 'Silk blend with hand-stitched gold embroidery. Dry clean only.',
+    isNew: false, isFeatured: true,
+  },
+  {
+    id: 6, slug: 'midnight-noir-fatua',
+    name: 'Midnight Noir Fatua', price: 1800, originalPrice: 2400,
+    category: 'fatua', gender: 'men', fabric: 'Cotton', occasion: 'Casual',
+    colors: ['Black', 'Charcoal'], sizes: ['S', 'M', 'L', 'XL'],
+    image: '/images/products/fatua-black.png', hoverImage: '/images/products/fatua-black.png',
+    description: 'A stylish black fatua with subtle geometric patterns and mandarin collar.',
+    story: 'Where street style meets Bangladeshi tradition — the perfect everyday piece for the fashion-forward man.',
+    material: '100% Premium Cotton. Machine wash gentle cycle.',
+    isNew: true, isFeatured: false,
+  },
+];
+
+export const categories = [
+  { name: 'Sarees', slug: 'sarees', count: 24 },
+  { name: 'Salwar Kameez', slug: 'salwar-kameez', count: 18 },
+  { name: 'Kurtas', slug: 'kurtas-women', count: 15 },
+  { name: 'Fusion Wear', slug: 'fusion-wear', count: 12 },
+  { name: 'Panjabis', slug: 'panjabis', count: 20 },
+  { name: 'Fatua', slug: 'fatua', count: 10 },
+  { name: 'Waistcoats', slug: 'waistcoats', count: 8 },
+];
+
+export const fabrics = ['Cotton', 'Silk', 'Georgette', 'Chiffon', 'Linen', 'Cotton Blend', 'Silk Blend'];
+export const occasions = ['Casual', 'Festival', 'Wedding', 'Party', 'Formal'];
+export const colors = ['Red', 'Blue', 'Green', 'Black', 'White', 'Gold', 'Maroon', 'Ivory'];

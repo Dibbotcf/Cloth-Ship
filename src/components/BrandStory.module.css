@@ -1,0 +1,97 @@
+.section {
+  padding: var(--spacing-4xl) 0;
+  background: var(--color-white);
+}
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--spacing-xl);
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4xl);
+  align-items: center;
+}
+.imageCol { position: relative; }
+.imageWrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.image {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+.imageAccent {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 120px;
+  height: 120px;
+  border: 3px solid var(--color-accent-gold);
+  border-radius: var(--radius-lg);
+  z-index: -1;
+  opacity: 0.5;
+}
+.contentCol { padding: var(--spacing-xl) 0; }
+.label {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+.title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: var(--color-text-dark);
+  margin-bottom: var(--spacing-lg);
+}
+.divider {
+  width: 60px;
+  height: 3px;
+  background: var(--color-accent-gold);
+  margin-bottom: var(--spacing-xl);
+}
+.text {
+  font-size: 14px;
+  color: var(--color-text-medium);
+  line-height: 1.8;
+  margin-bottom: var(--spacing-lg);
+}
+.stats {
+  display: flex;
+  gap: var(--spacing-2xl);
+  margin-top: var(--spacing-2xl);
+  padding-top: var(--spacing-xl);
+  border-top: 1px solid var(--color-border);
+}
+.stat { text-align: center; }
+.statNumber {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+.statLabel {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-text-light);
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; gap: var(--spacing-2xl); }
+  .stats { gap: var(--spacing-xl); }
+  .imageAccent { display: none; }
+}
