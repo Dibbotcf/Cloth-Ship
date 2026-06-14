@@ -27,7 +27,8 @@ jobs:
       - name: Copy static files into standalone
         run: |
           cp -r .next/static .next/standalone/.next/static
-          cp -r public .next/standalone/public
+          mkdir -p .next/standalone/public
+          cp -r public/. .next/standalone/public/
 
       - name: Upload build to server
         uses: appleboy/scp-action@master
