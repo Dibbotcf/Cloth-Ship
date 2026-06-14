@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './NewArrivals.module.css';
+import ProductCardImage from './ProductCardImage';
 
 export default function NewArrivals() {
   const [newProducts, setNewProducts] = useState([]);
@@ -45,7 +46,7 @@ export default function NewArrivals() {
           {newProducts.map(product => (
             <div key={product.id} className={styles.card} id={`product-card-${product.id}`}>
               <Link href={`/product/${product.slug}`} className={styles.cardImageWrap}>
-                <img src={product.image} alt={product.name} className={styles.cardImage} />
+                <ProductCardImage product={product} className={styles.cardImage} />
                 {(product.is_new === 1) && <span className={styles.badge}>New</span>}
                 {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
                   <span className={styles.badgeSale}>-{Math.round((1 - parseFloat(product.price) / parseFloat(product.original_price)) * 100)}%</span>

@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { fabrics, occasions, colors as colorOptions } from '@/data/products';
 import styles from './shop.module.css';
+import ProductCardImage from '@/components/ProductCardImage';
 
 export default function ShopPage() {
   const searchParams = useSearchParams();
@@ -135,7 +136,7 @@ export default function ShopPage() {
             filtered.map(product => (
               <div key={product.id} className={styles.card}>
                   <Link href={`/product/${product.slug}`} className={styles.cardImageWrap}>
-                  <img src={product.image || '/images/placeholder.png'} alt={product.name} className={styles.cardImage} />
+                  <ProductCardImage product={product} className={styles.cardImage} />
                   {(product.is_new === 1) && <span className={styles.badge}>New</span>}
                   {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
                     <span className={styles.badgeSale}>-{Math.round((1 - parseFloat(product.price) / parseFloat(product.original_price)) * 100)}%</span>

@@ -96,6 +96,7 @@ export default function Header() {
           {/* Nav Right */}
           <div className={styles.navRight}>
             <Link href="/about" className={styles.navLink}>About</Link>
+            <Link href="/contact" className={styles.navLink}>Contact</Link>
             <button className={styles.iconBtn} onClick={() => setSearchOpen(!searchOpen)} aria-label="Search" id="search-toggle">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
@@ -138,6 +139,7 @@ export default function Header() {
           ))}
           <Link href="/shop?collection=spring-voyage" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Collections</Link>
           <Link href="/about" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>About Us</Link>
+          <Link href="/contact" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Contact Us</Link>
         </nav>
       </div>
     </>

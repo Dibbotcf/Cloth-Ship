@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './wishlist.module.css';
+import ProductCardImage from '@/components/ProductCardImage';
 
 export default function WishlistPage() {
   const [wishlist, setWishlist] = useState([]);
@@ -43,7 +44,7 @@ export default function WishlistPage() {
             <div key={item.id} className={styles.card}>
               <button className={styles.removeBtn} onClick={() => removeItem(item.id)}>✕</button>
               <Link href={`/product/${item.slug}`} className={styles.cardImageWrap}>
-                <img src={item.image} alt={item.name} className={styles.cardImage} />
+                <ProductCardImage product={item} className={styles.cardImage} />
               </Link>
               <div className={styles.cardInfo}>
                 <Link href={`/product/${item.slug}`} className={styles.cardName}>{item.name}</Link>

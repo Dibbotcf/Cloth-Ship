@@ -1,0 +1,27 @@
+.imageContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease, opacity 0.3s ease;
+  display: block;
+}
+
+/* Maintain hover scale zoom effect from parent */
+.imageContainer:hover .img {
+  transform: scale(1.08);
+}
+
+.fadeIn {
+  opacity: 1;
+}
+
+.fadeOut {
+  opacity: 0.15;
+}

@@ -143,3 +143,19 @@
 @media (max-width: 480px) {
   .footerGrid { grid-template-columns: 1fr; }
 }
+
+.successMsg {
+  color: var(--color-accent-gold);
+  font-size: 13px;
+  margin-top: var(--spacing-sm);
+  font-weight: 500;
+  text-align: center;
+}
+
+.errorMsg {
+  color: #ff8080;
+  font-size: 13px;
+  margin-top: var(--spacing-sm);
+  font-weight: 500;
+  text-align: center;
+}
