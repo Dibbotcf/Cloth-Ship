@@ -50,6 +50,11 @@ export default function AdminLoginPage() {
           </div>
           <button type="submit" className={styles.loginBtn}>Login</button>
         </form>
+        <div className={styles.backLink}>
+          <a href="https://www.clothship.shop/" className={styles.backBtn}>
+            ← Go to Main Site
+          </a>
+        </div>
       </div>
     </div>
   );
