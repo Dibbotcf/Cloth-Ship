@@ -1,0 +1,32 @@
+name: Deploy to Oracle VM
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to app directory
+            cd ~/Cloth-Ship || git clone https://github.com/Dibbotcf/Cloth-Ship.git ~/Cloth-Ship && cd ~/Cloth-Ship
+            
+            # Pull latest changes
+            git pull origin main
+            
+            # Install dependencies
+            npm install
+            
+            # Build the Next.js app
+            npm run build
+            
+            # Restart PM2 server (assuming it's named 'cloth-ship')
+            pm2 restart cloth-ship || pm2 start npm --name "cloth-ship" -- start
