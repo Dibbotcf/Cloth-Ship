@@ -1,12 +1,12 @@
 'use client';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { fabrics, occasions, colors as colorOptions } from '@/data/products';
 import styles from './shop.module.css';
 import ProductCardImage from '@/components/ProductCardImage';
 
-export default function ShopPage() {
+function ShopContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get('category') || '';
   const initialGender = searchParams.get('gender') || '';
@@ -161,5 +161,13 @@ export default function ShopPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div style={{padding:'2rem',textAlign:'center'}}>Loading...</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }
