@@ -87,7 +87,7 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className={styles.logo} id="site-logo">
-            <img src="/images/brand/logo.png" alt="Cloth Ship" className={styles.logoImg} />
+            <img src="/images/brand/logo.jpeg" alt="Cloth Ship" className={styles.logoImg} />
             <div className={styles.logoText}>
               <span className={styles.logoName}>Cloth Ship</span>
             </div>

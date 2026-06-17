@@ -1,0 +1,98 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+}
+.trigger {
+  width: 100%;
+  padding: 10px 14px;
+  background: #fff;
+  border: 1px solid #e0dbd5;
+  border-radius: 6px;
+  color: #1a1209;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  height: 42px; /* match fieldSelect */
+}
+.trigger:hover, .wrapper:focus-within .trigger {
+  border-color: #a0522d;
+}
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #e0dbd5;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 50;
+  max-height: 250px;
+  display: flex;
+  flex-direction: column;
+}
+.searchBox {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e0dbd5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.searchIcon {
+  color: #8c8278;
+}
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #1a1209;
+}
+.searchInput::placeholder {
+  color: #8c8278;
+  font-style: italic;
+}
+.list {
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.item {
+  padding: 8px 14px;
+  font-size: 14px;
+  color: #1a1209;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.item:hover {
+  background: #f8f6f3;
+}
+.selected {
+  background: rgba(160, 82, 45, 0.08);
+  color: #a0522d;
+  font-weight: 600;
+}
+.addItem {
+  padding: 8px 14px;
+  font-size: 14px;
+  color: #a0522d;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-top: 1px solid #e0dbd5;
+  transition: background 0.2s ease;
+  font-weight: 600;
+}
+.addItem:hover {
+  background: rgba(160, 82, 45, 0.04);
+}
+.empty {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #8c8278;
+  text-align: center;
+}

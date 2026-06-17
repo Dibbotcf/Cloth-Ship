@@ -30,13 +30,16 @@ export async function PUT(request, context) {
     
     await db.query(
       `UPDATE products 
-       SET slug=?, name=?, price=?, original_price=?, category=?, gender=?, fabric=?, occasion=?, colors=?, sizes=?, image=?, description=?, is_new=?, is_featured=?
+       SET slug=?, name=?, price=?, original_price=?, category=?, gender=?, fabric=?, occasion=?, colors=?, sizes=?, image=?, description=?, story=?, material=?, is_new=?, is_featured=?, stock=?, gallery=?
        WHERE id=?`,
       [
         slug, data.name, data.price, data.original_price || null, 
-        data.category, data.gender, data.fabric, data.occasion,
+        data.category, data.gender, data.fabric || null, data.occasion || null,
         JSON.stringify(data.colors || []), JSON.stringify(data.sizes || []),
-        data.image, data.description, data.is_new ? 1 : 0, data.is_featured ? 1 : 0,
+        data.image, data.description || null,
+        data.story || null, data.material || null,
+        data.is_new ? 1 : 0, data.is_featured ? 1 : 0,
+        data.stock || 0, data.gallery ? JSON.stringify(data.gallery) : null,
         id
       ]
     );

@@ -30,12 +30,85 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--color-cream);
+  cursor: zoom-in;
 }
 .mainImg {
   width: 100%;
   aspect-ratio: 3/4;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(--color-cream);
+  display: block;
+  transition: transform 0.4s ease;
 }
+/* Zoom controls overlay */
+.galleryControls {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 10;
+}
+.mainImage:hover .galleryControls { opacity: 1; }
+.zoomBtn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 300;
+  color: #2d1f0e;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: background 0.2s ease, transform 0.15s ease;
+  line-height: 1;
+}
+.zoomBtn:hover { background: rgba(255,255,255,1); transform: scale(1.1); }
+/* Slide dots */
+.slideDots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+}
+.slideDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.slideDotActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  transform: scale(1.25);
+}
+/* Thumbnail hover */
+.thumbStrip { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.thumb {
+  width: 72px; height: 72px;
+  border-radius: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 2px solid #e0dbd5;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+.thumb:hover { transform: scale(1.06); border-color: #c8bfb5; }
+.thumbActive { border-color: #a0522d !important; }
+.thumbImg { width: 100%; height: 100%; object-fit: cover; display: block; }
 .badge {
   position: absolute;
   top: 16px; left: 16px;

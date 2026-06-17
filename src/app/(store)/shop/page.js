@@ -1,18 +1,21 @@
 'use client';
 import { useState, useMemo, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { fabrics, occasions, colors as colorOptions } from '@/data/products';
+import { fabrics as staticFabrics, occasions as staticOccasions, colors as colorOptions } from '@/data/products';
 import styles from './shop.module.css';
 import ProductCardImage from '@/components/ProductCardImage';
 
 function ShopContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialCategory = searchParams.get('category') || '';
   const initialGender = searchParams.get('gender') || '';
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [fabricsList, setFabricsList] = useState(staticFabrics);
+  const [occasionsList, setOccasionsList] = useState(staticOccasions);
   const [filters, setFilters] = useState({
     category: initialCategory,
     gender: initialGender,
@@ -31,6 +34,24 @@ function ShopContent() {
         setProducts(Array.isArray(data) ? data : []);
         setLoading(false);
       });
+
+    fetch('/api/fabrics')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setFabricsList(data.map(item => item.name));
+        }
+      })
+      .catch(console.error);
+
+    fetch('/api/occasions')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setOccasionsList(data.map(item => item.name));
+        }
+      })
+      .catch(console.error);
   }, []);
 
   const filtered = useMemo(() => {
@@ -44,7 +65,7 @@ function ShopContent() {
     return result;
   }, [filters, products]);
 
-  const addToCart = (product) => {
+  const addToCart = (product, redirectUrl = '/cart') => {
     const cart = JSON.parse(localStorage.getItem('clothship_cart') || '[]');
     let sizes = product.sizes;
     if (typeof sizes === 'string') { try { sizes = JSON.parse(sizes); } catch (e) { sizes = ['Free Size']; } }
@@ -53,6 +74,11 @@ function ShopContent() {
     else cart.push({ ...product, quantity: 1, selectedSize: Array.isArray(sizes) ? sizes[0] : 'Free Size', sizes });
     localStorage.setItem('clothship_cart', JSON.stringify(cart));
     window.dispatchEvent(new Event('cart-updated'));
+    router.push(redirectUrl);
+  };
+
+  const buyNow = (product) => {
+    addToCart(product, '/checkout');
   };
 
   const updateFilter = (key, value) => {
@@ -92,7 +118,7 @@ function ShopContent() {
 
           <div className={styles.filterGroup}>
             <h4 className={styles.filterTitle}>Gender</h4>
-            {['women', 'men'].map(g => (
+            {['women', 'men', 'unisex'].map(g => (
               <label key={g} className={styles.filterOption}>
                 <input type="checkbox" checked={filters.gender === g} onChange={() => updateFilter('gender', g)} />
                 <span>{g.charAt(0).toUpperCase() + g.slice(1)}</span>
@@ -102,7 +128,7 @@ function ShopContent() {
 
           <div className={styles.filterGroup}>
             <h4 className={styles.filterTitle}>Fabric</h4>
-            {fabrics.map(f => (
+            {fabricsList.map(f => (
               <label key={f} className={styles.filterOption}>
                 <input type="checkbox" checked={filters.fabric === f} onChange={() => updateFilter('fabric', f)} />
                 <span>{f}</span>
@@ -112,7 +138,7 @@ function ShopContent() {
 
           <div className={styles.filterGroup}>
             <h4 className={styles.filterTitle}>Occasion</h4>
-            {occasions.map(o => (
+            {occasionsList.map(o => (
               <label key={o} className={styles.filterOption}>
                 <input type="checkbox" checked={filters.occasion === o} onChange={() => updateFilter('occasion', o)} />
                 <span>{o}</span>
@@ -135,24 +161,28 @@ function ShopContent() {
           ) : (
             filtered.map(product => (
               <div key={product.id} className={styles.card}>
-                  <Link href={`/product/${product.slug}`} className={styles.cardImageWrap}>
+                <Link href={`/product/${product.slug}`} className={styles.cardLinkOverlay} aria-label={`View ${product.name}`} />
+                <div className={styles.cardImageWrap}>
                   <ProductCardImage product={product} className={styles.cardImage} />
                   {(product.is_new === 1) && <span className={styles.badge}>New</span>}
                   {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
                     <span className={styles.badgeSale}>-{Math.round((1 - parseFloat(product.price) / parseFloat(product.original_price)) * 100)}%</span>
                   )}
-                </Link>
-                <div className={styles.cardHover}>
-                  <button className={styles.quickAdd} onClick={() => addToCart(product)}>Add to Cart</button>
                 </div>
-                <div className={styles.cardInfo}>
-                  <span className={styles.cardCategory}>{product.category.replace(/-/g, ' ')}</span>
-                  <Link href={`/product/${product.slug}`} className={styles.cardName}>{product.name}</Link>
-                  <div className={styles.cardPricing}>
-                    <span className={styles.cardPrice}>৳{parseFloat(product.price).toLocaleString()}</span>
-                    {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
-                      <span className={styles.cardOriginal}>৳{parseFloat(product.original_price).toLocaleString()}</span>
-                    )}
+                <div className={styles.cardContent}>
+                  <div className={styles.cardInfo}>
+                    <span className={styles.cardCategory}>{product.category.replace(/-/g, ' ')}</span>
+                    <span className={styles.cardName}>{product.name}</span>
+                    <div className={styles.cardPricing}>
+                      <span className={styles.cardPrice}>৳{parseFloat(product.price).toLocaleString()}</span>
+                      {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
+                        <span className={styles.cardOriginal}>৳{parseFloat(product.original_price).toLocaleString()}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.cardActions}>
+                    <button className={styles.actionBtnOutline} onClick={(e) => { e.preventDefault(); addToCart(product); }}>Add to Cart</button>
+                    <button className={styles.actionBtnSolid} onClick={(e) => { e.preventDefault(); buyNow(product); }}>Buy Now</button>
                   </div>
                 </div>
               </div>

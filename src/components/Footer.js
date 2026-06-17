@@ -70,7 +70,10 @@ export default function Footer() {
           <div className={styles.footerGrid}>
             {/* Brand */}
             <div className={styles.footerCol}>
-              <h4 className={styles.footerBrand}>Cloth Ship</h4>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <img src="/images/brand/logo.jpeg" alt="Cloth Ship Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+                <h4 className={styles.footerBrand} style={{ margin: 0 }}>Cloth Ship</h4>
+              </div>
               <p className={styles.footerTagline}>Tradition with a Modern Twist</p>
               <p className={styles.footerAbout}>Weaving heritage into every thread, Cloth Ship brings you premium traditional clothing for the modern wardrobe.</p>
               <div className={styles.socialLinks}>

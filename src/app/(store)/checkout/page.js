@@ -9,6 +9,7 @@ export default function CheckoutPage() {
     name: '', email: '', phone: '', address: '', city: '', zip: '', paymentMethod: 'cod',
   });
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     try { setCart(JSON.parse(localStorage.getItem('clothship_cart') || '[]')); }
@@ -21,10 +22,26 @@ export default function CheckoutPage() {
 
   const updateForm = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
 
-  const placeOrder = () => {
-    setOrderPlaced(true);
-    localStorage.setItem('clothship_cart', '[]');
-    window.dispatchEvent(new Event('cart-updated'));
+  const placeOrder = async () => {
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ form, cart, total, shipping })
+      });
+      if (res.ok) {
+        setOrderPlaced(true);
+        localStorage.setItem('clothship_cart', '[]');
+        window.dispatchEvent(new Event('cart-updated'));
+      } else {
+        alert('Failed to place order. Please try again.');
+      }
+    } catch (err) {
+      alert('Network error. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (orderPlaced) {
@@ -102,7 +119,9 @@ export default function CheckoutPage() {
               </div>
               <div className={styles.stepActions}>
                 <button className={styles.backBtn} onClick={() => setStep(2)}>← Back</button>
-                <button className={styles.placeOrderBtn} onClick={placeOrder}>Place Order — ৳{total.toLocaleString()}</button>
+                <button className={styles.placeOrderBtn} onClick={placeOrder} disabled={submitting}>
+                  {submitting ? 'Placing Order...' : `Place Order — ৳${total.toLocaleString()}`}
+                </button>
               </div>
             </div>
           )}
