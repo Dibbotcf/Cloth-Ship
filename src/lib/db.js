@@ -12,7 +12,8 @@ export function getDb() {
       database: process.env.DB_NAME || 'clothship',
       waitForConnections: true,
       connectionLimit: 10,
-      queueLimit: 0
+      queueLimit: 0,
+      ...(process.env.DB_SSL === 'true' && { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: false } }),
     });
   }
   return pool;
