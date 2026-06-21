@@ -2,7 +2,6 @@
 import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { fabrics as staticFabrics, occasions as staticOccasions, colors as colorOptions } from '@/data/products';
 import styles from './shop.module.css';
 import ProductCardImage from '@/components/ProductCardImage';
 
@@ -14,8 +13,6 @@ function ShopContent() {
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [fabricsList, setFabricsList] = useState(staticFabrics);
-  const [occasionsList, setOccasionsList] = useState(staticOccasions);
   const [filters, setFilters] = useState({
     category: initialCategory,
     gender: initialGender,
@@ -34,36 +31,37 @@ function ShopContent() {
         setProducts(Array.isArray(data) ? data : []);
         setLoading(false);
       });
-
-    fetch('/api/fabrics')
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setFabricsList(data.map(item => item.name));
-        }
-      })
-      .catch(console.error);
-
-    fetch('/api/occasions')
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setOccasionsList(data.map(item => item.name));
-        }
-      })
-      .catch(console.error);
   }, []);
 
-  const filtered = useMemo(() => {
+  // Base pool: products matching gender+category (but not fabric/occasion)
+  // This makes fabric/occasion options contextual to the current gender/category selection
+  const baseFiltered = useMemo(() => {
     let result = [...products];
     if (filters.category) result = result.filter(p => p.category === filters.category);
     if (filters.gender) result = result.filter(p => p.gender === filters.gender);
+    return result;
+  }, [products, filters.category, filters.gender]);
+
+  const fabricsList = useMemo(() => {
+    const seen = new Set();
+    baseFiltered.forEach(p => p.fabric && seen.add(p.fabric));
+    return [...seen].sort();
+  }, [baseFiltered]);
+
+  const occasionsList = useMemo(() => {
+    const seen = new Set();
+    baseFiltered.forEach(p => p.occasion && seen.add(p.occasion));
+    return [...seen].sort();
+  }, [baseFiltered]);
+
+  const filtered = useMemo(() => {
+    let result = [...baseFiltered];
     if (filters.fabric) result = result.filter(p => p.fabric === filters.fabric);
     if (filters.occasion) result = result.filter(p => p.occasion === filters.occasion);
     if (filters.sort === 'price-low') result.sort((a, b) => a.price - b.price);
     if (filters.sort === 'price-high') result.sort((a, b) => b.price - a.price);
     return result;
-  }, [filters, products]);
+  }, [baseFiltered, filters.fabric, filters.occasion, filters.sort]);
 
   const addToCart = (product, redirectUrl = '/cart') => {
     const cart = JSON.parse(localStorage.getItem('clothship_cart') || '[]');
@@ -126,25 +124,29 @@ function ShopContent() {
             ))}
           </div>
 
-          <div className={styles.filterGroup}>
-            <h4 className={styles.filterTitle}>Fabric</h4>
-            {fabricsList.map(f => (
-              <label key={f} className={styles.filterOption}>
-                <input type="checkbox" checked={filters.fabric === f} onChange={() => updateFilter('fabric', f)} />
-                <span>{f}</span>
-              </label>
-            ))}
-          </div>
+          {fabricsList.length > 0 && (
+            <div className={styles.filterGroup}>
+              <h4 className={styles.filterTitle}>Fabric</h4>
+              {fabricsList.map(f => (
+                <label key={f} className={styles.filterOption}>
+                  <input type="checkbox" checked={filters.fabric === f} onChange={() => updateFilter('fabric', f)} />
+                  <span>{f}</span>
+                </label>
+              ))}
+            </div>
+          )}
 
-          <div className={styles.filterGroup}>
-            <h4 className={styles.filterTitle}>Occasion</h4>
-            {occasionsList.map(o => (
-              <label key={o} className={styles.filterOption}>
-                <input type="checkbox" checked={filters.occasion === o} onChange={() => updateFilter('occasion', o)} />
-                <span>{o}</span>
-              </label>
-            ))}
-          </div>
+          {occasionsList.length > 0 && (
+            <div className={styles.filterGroup}>
+              <h4 className={styles.filterTitle}>Occasion</h4>
+              {occasionsList.map(o => (
+                <label key={o} className={styles.filterOption}>
+                  <input type="checkbox" checked={filters.occasion === o} onChange={() => updateFilter('occasion', o)} />
+                  <span>{o}</span>
+                </label>
+              ))}
+            </div>
+          )}
 
           <button className={styles.clearFilters} onClick={() => setFilters({ category: '', gender: '', fabric: '', occasion: '', color: '', priceRange: '', sort: 'newest' })}>
             Clear All Filters
