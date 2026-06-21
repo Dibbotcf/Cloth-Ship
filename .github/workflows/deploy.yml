@@ -47,15 +47,18 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Stop old process FIRST before touching files (prevents dual-process OOM)
+            pm2 delete cloth-ship 2>/dev/null || true
+            sleep 2
+
             # Swap in new build
             rm -rf ~/Cloth-Ship
             mv ~/deploy-tmp/.next/standalone ~/Cloth-Ship
             rm -rf ~/deploy-tmp
 
-            # Restore .env if it exists
+            # Restore .env
             [ -f ~/.cloth-ship.env ] && cp ~/.cloth-ship.env ~/Cloth-Ship/.env
 
             cd ~/Cloth-Ship
-            pm2 delete cloth-ship 2>/dev/null || true
             PORT=3000 pm2 start server.js --name "cloth-ship"
             pm2 save
