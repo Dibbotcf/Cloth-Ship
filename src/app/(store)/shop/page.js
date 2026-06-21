@@ -8,14 +8,11 @@ import ProductCardImage from '@/components/ProductCardImage';
 function ShopContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const initialCategory = searchParams.get('category') || '';
-  const initialGender = searchParams.get('gender') || '';
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
-    category: initialCategory,
-    gender: initialGender,
+    category: searchParams.get('category') || '',
+    gender: searchParams.get('gender') || '',
     fabric: '',
     occasion: '',
     color: '',
@@ -23,6 +20,17 @@ function ShopContent() {
     sort: 'newest',
   });
   const [mobileFilters, setMobileFilters] = useState(false);
+
+  // Sync filters when URL params change (e.g. clicking Women/Men nav from within shop)
+  useEffect(() => {
+    setFilters(prev => ({
+      ...prev,
+      category: searchParams.get('category') || '',
+      gender: searchParams.get('gender') || '',
+      fabric: '',
+      occasion: '',
+    }));
+  }, [searchParams]);
 
   useEffect(() => {
     fetch('/api/products')
