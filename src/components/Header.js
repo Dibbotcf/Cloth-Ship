@@ -3,28 +3,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './Header.module.css';
 
-const menuItems = {
-  Women: {
-    categories: [
-      { name: 'Sarees', href: '/shop?category=sarees', desc: 'Handwoven elegance' },
-      { name: 'Salwar Kameez', href: '/shop?category=salwar-kameez', desc: 'Timeless comfort' },
-      { name: 'Kurtas', href: '/shop?category=kurtas-women', desc: 'Everyday grace' },
-      { name: 'Fusion Wear', href: '/shop?category=fusion-wear', desc: 'Modern tradition' },
-    ],
-  },
-  Men: {
-    categories: [
-      { name: 'Panjabis', href: '/shop?category=panjabis', desc: 'Classic refinement' },
-      { name: 'Fatua', href: '/shop?category=fatua', desc: 'Casual heritage' },
-      { name: 'Waistcoats', href: '/shop?category=waistcoats', desc: 'Dapper details' },
-    ],
-  },
-};
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [megaMenu, setMegaMenu] = useState(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
+const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
@@ -56,32 +38,8 @@ export default function Header() {
 
           {/* Nav Left */}
           <nav className={styles.navLeft}>
-            {Object.keys(menuItems).map(key => (
-              <div key={key} className={styles.navItem} onMouseEnter={() => setMegaMenu(key)} onMouseLeave={() => setMegaMenu(null)}>
-                <button className={styles.navLink}>{key}</button>
-                {megaMenu === key && (
-                  <div className={styles.megaMenu}>
-                    <div className={styles.megaMenuInner}>
-                      <div className={styles.megaMenuCategories}>
-                        <h4 className={styles.megaMenuTitle}>{key}&apos;s Collection</h4>
-                        {menuItems[key].categories.map(cat => (
-                          <Link key={cat.name} href={cat.href} className={styles.megaMenuLink} onClick={() => setMegaMenu(null)}>
-                            <span className={styles.megaMenuLinkName}>{cat.name}</span>
-                            <span className={styles.megaMenuLinkDesc}>{cat.desc}</span>
-                          </Link>
-                        ))}
-                      </div>
-                      <div className={styles.megaMenuImage}>
-                        <img src={key === 'Women' ? '/images/categories/women.png' : '/images/categories/men.png'} alt={`${key}'s collection`} />
-                        <Link href={`/shop?gender=${key.toLowerCase()}`} className={styles.megaMenuShopAll}>
-                          Shop All {key}&apos;s →
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+            <Link href="/shop?gender=women" className={styles.navLink}>Women</Link>
+            <Link href="/shop?gender=men" className={styles.navLink}>Men</Link>
             <Link href="/shop?collection=spring-voyage" className={styles.navLink}>Collections</Link>
           </nav>
 
@@ -129,14 +87,8 @@ export default function Header() {
           <button onClick={() => setMobileOpen(false)} className={styles.mobileClose}>✕</button>
         </div>
         <nav className={styles.mobileNav}>
-          {Object.keys(menuItems).map(key => (
-            <div key={key} className={styles.mobileNavGroup}>
-              <h4 className={styles.mobileNavTitle}>{key}</h4>
-              {menuItems[key].categories.map(cat => (
-                <Link key={cat.name} href={cat.href} className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>{cat.name}</Link>
-              ))}
-            </div>
-          ))}
+          <Link href="/shop?gender=women" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Women</Link>
+          <Link href="/shop?gender=men" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Men</Link>
           <Link href="/shop?collection=spring-voyage" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Collections</Link>
           <Link href="/about" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>About Us</Link>
           <Link href="/contact" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Contact Us</Link>
