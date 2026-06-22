@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Banknote, FileText, Plus, Check, Download, Upload, Trash2, XCircle, CheckCircle2 } from 'lucide-react';
+import { Banknote, FileText, Plus, Check, Download, Upload, Trash2, XCircle, CheckCircle2, Pencil, X } from 'lucide-react';
 import adminStyles from '../../admin.module.css';
 import s from '../ledger.module.css';
 
@@ -17,6 +17,8 @@ export default function CapitalPage() {
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [toast, setToast]       = useState(null);
+  const [editingId, setEditingId]   = useState(null);
+  const [editForm, setEditForm]     = useState(null);
 
   const [form, setForm] = useState({
     entry_date: today(), amount: '', note: '', type: 'invest'
@@ -42,6 +44,41 @@ export default function CapitalPage() {
   useEffect(() => { load(); }, []);
 
   const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleEditChange = e => setEditForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+
+  const startEdit = (e) => {
+    setEditingId(e.id);
+    setEditForm({
+      entry_date: e.entry_date ? e.entry_date.split('T')[0] : today(),
+      amount: String(Math.abs(Number(e.amount))),
+      note: e.note || '',
+      type: Number(e.amount) >= 0 ? 'invest' : 'withdraw',
+    });
+  };
+  const cancelEdit = () => { setEditingId(null); setEditForm(null); };
+
+  const handleEditSubmit = async (id) => {
+    if (!editForm.amount || parseFloat(editForm.amount) === 0) {
+      showToast('Amount cannot be zero.', 'error'); return;
+    }
+    setSubmitting(true);
+    const finalAmount = editForm.type === 'withdraw'
+      ? -Math.abs(parseFloat(editForm.amount))
+      :  Math.abs(parseFloat(editForm.amount));
+    try {
+      const res = await fetch(`/api/admin/ledger/capital/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ entry_date: editForm.entry_date, amount: finalAmount, note: editForm.note }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast('Capital entry updated.');
+      cancelEdit();
+      load();
+    } catch (e) { showToast(e.message, 'error'); }
+    finally { setSubmitting(false); }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -233,31 +270,70 @@ export default function CapitalPage() {
               </thead>
               <tbody>
                 {entries.map((e, idx) => (
-                  <tr key={e.id}>
-                    <td style={{ color: '#b0a8a0', fontSize: 12 }}>{entries.length - idx}</td>
-                    <td style={{ color: '#7a7a7a' }}>
-                      {new Date(e.entry_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </td>
-                    <td>
-                      {Number(e.amount) >= 0
-                        ? <span className={`${s.badge} ${s.badgePaid}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Download size={12} strokeWidth={2.5}/> Invest</span>
-                        : <span className={`${s.badge} ${s.badgeDue}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Upload size={12} strokeWidth={2.5}/> Withdraw</span>}
-                    </td>
-                    <td className={Number(e.amount) >= 0 ? s.amountCell : s.amountWithdraw}>
-                      {Number(e.amount) >= 0 ? fmt(e.amount) : `−${fmt(Math.abs(e.amount))}`}
-                    </td>
-                    <td style={{ color: '#7a7a7a', fontSize: 12 }}>{e.note || '—'}</td>
-                    <td>
-                      <button
-                        onClick={() => handleDelete(e.id)}
-                        disabled={deletingId === e.id}
-                        className={s.deleteBtn}
-                        style={{ display: 'flex', alignItems: 'center', gap: 4 }}
-                      >
-                        {deletingId === e.id ? '⏳' : <Trash2 size={14} strokeWidth={2} />} Delete
-                      </button>
-                    </td>
-                  </tr>
+                  editingId === e.id ? (
+                    <tr key={e.id} style={{ background: '#fffbf5' }}>
+                      <td style={{ color: '#b0a8a0', fontSize: 12 }}>{entries.length - idx}</td>
+                      <td>
+                        <input type="date" name="entry_date" value={editForm.entry_date} onChange={handleEditChange}
+                          style={{ padding: '6px 8px', borderRadius: 6, border: '1.5px solid #e0dbd5', fontSize: 12, width: '100%' }} />
+                      </td>
+                      <td>
+                        <select name="type" value={editForm.type} onChange={handleEditChange}
+                          style={{ padding: '6px 8px', borderRadius: 6, border: '1.5px solid #e0dbd5', fontSize: 12 }}>
+                          <option value="invest">Invest</option>
+                          <option value="withdraw">Withdraw</option>
+                        </select>
+                      </td>
+                      <td>
+                        <input type="number" name="amount" value={editForm.amount} onChange={handleEditChange} min="0.01" step="0.01"
+                          style={{ padding: '6px 8px', borderRadius: 6, border: '1.5px solid #e0dbd5', fontSize: 12, width: 100 }} />
+                      </td>
+                      <td>
+                        <input type="text" name="note" value={editForm.note} onChange={handleEditChange} placeholder="Note"
+                          style={{ padding: '6px 8px', borderRadius: 6, border: '1.5px solid #e0dbd5', fontSize: 12, width: '100%' }} />
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => handleEditSubmit(e.id)} disabled={submitting}
+                            style={{ padding: '5px 10px', borderRadius: 6, border: 'none', background: '#16a34a', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            {submitting ? '⏳' : <><Check size={13} /> Save</>}
+                          </button>
+                          <button onClick={cancelEdit}
+                            style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #e0dbd5', background: '#fff', color: '#666', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <X size={13} /> Cancel
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={e.id}>
+                      <td style={{ color: '#b0a8a0', fontSize: 12 }}>{entries.length - idx}</td>
+                      <td style={{ color: '#7a7a7a' }}>
+                        {new Date(e.entry_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </td>
+                      <td>
+                        {Number(e.amount) >= 0
+                          ? <span className={`${s.badge} ${s.badgePaid}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Download size={12} strokeWidth={2.5}/> Invest</span>
+                          : <span className={`${s.badge} ${s.badgeDue}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Upload size={12} strokeWidth={2.5}/> Withdraw</span>}
+                      </td>
+                      <td className={Number(e.amount) >= 0 ? s.amountCell : s.amountWithdraw}>
+                        {Number(e.amount) >= 0 ? fmt(e.amount) : `−${fmt(Math.abs(e.amount))}`}
+                      </td>
+                      <td style={{ color: '#7a7a7a', fontSize: 12 }}>{e.note || '—'}</td>
+                      <td>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => startEdit(e)}
+                            style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #d6c8bc', background: '#fff', color: '#6b4c2a', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Pencil size={13} /> Edit
+                          </button>
+                          <button onClick={() => handleDelete(e.id)} disabled={deletingId === e.id}
+                            className={s.deleteBtn} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            {deletingId === e.id ? '⏳' : <Trash2 size={14} strokeWidth={2} />} Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
                 ))}
               </tbody>
             </table>

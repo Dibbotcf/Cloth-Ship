@@ -21,8 +21,11 @@ export default function PurchasesPage() {
   const [deletingId, setDeletingId] = useState(null);
   const [toast, setToast]           = useState(null);
   // Edit state
-  const [editingPurchase, setEditingPurchase] = useState(null); // the purchase being edited
+  const [editingPurchase, setEditingPurchase] = useState(null);
   const [editForm, setEditForm] = useState(null);
+  const [editingItemId, setEditingItemId]   = useState(null);
+  const [editItemForm, setEditItemForm]     = useState(null);
+  const [deletingItemId, setDeletingItemId] = useState(null);
 
   const [form, setForm] = useState(emptyForm());
   const [newItemForm, setNewItemForm] = useState({ name: '', category: '', sku: '', unit: 'piece' });
@@ -127,6 +130,43 @@ export default function PurchasesPage() {
   };
 
   const cancelEdit = () => { setEditingPurchase(null); setEditForm(null); };
+
+  const startItemEdit = (item) => {
+    setEditingItemId(item.id);
+    setEditItemForm({ name: item.name, category: item.category || '', unit: item.unit || 'piece' });
+  };
+  const cancelItemEdit = () => { setEditingItemId(null); setEditItemForm(null); };
+
+  const handleItemEditSubmit = async (id) => {
+    if (!editItemForm.name?.trim()) { showToast('Item name is required.', 'error'); return; }
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/admin/ledger/items/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editItemForm),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast('Item updated.');
+      cancelItemEdit();
+      loadAll();
+    } catch (e) { showToast(e.message, 'error'); }
+    finally { setSubmitting(false); }
+  };
+
+  const handleItemDelete = async (id) => {
+    if (!window.confirm('Delete this item from catalog? This will fail if it has purchases or sales.')) return;
+    setDeletingItemId(id);
+    try {
+      const res = await fetch(`/api/admin/ledger/items/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast('Item deleted from catalog.');
+      loadAll();
+    } catch (e) { showToast(e.message, 'error'); }
+    finally { setDeletingItemId(null); }
+  };
 
   const handleEditSubmit = async (id) => {
     if (!editForm.quantity || !editForm.unit_cost) { showToast('Quantity and Unit Cost are required.', 'error'); return; }
@@ -500,11 +540,49 @@ export default function PurchasesPage() {
                   <th>Sold</th>
                   <th>In Stock</th>
                   <th>Invested</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {items.map(item => {
                   const stockCls = item.units_in_stock <= 0 ? s.stockPillOut : item.units_in_stock <= 2 ? s.stockPillLow : s.stockPillOk;
+                  if (editingItemId === item.id) {
+                    return (
+                      <tr key={item.id} style={{ background: '#fffbf5' }}>
+                        <td>
+                          <input type="text" value={editItemForm.name}
+                            onChange={e => setEditItemForm(p => ({ ...p, name: e.target.value }))}
+                            style={{ padding: '6px 8px', borderRadius: 6, border: '1.5px solid #e0dbd5', fontSize: 12, width: '100%' }} />
+                        </td>
+                        <td>
+                          <input type="text" value={editItemForm.category}
+                            onChange={e => setEditItemForm(p => ({ ...p, category: e.target.value }))}
+                            placeholder="Category"
+                            style={{ padding: '6px 8px', borderRadius: 6, border: '1.5px solid #e0dbd5', fontSize: 12, width: '100%' }} />
+                        </td>
+                        <td>{item.total_purchased} {item.unit}</td>
+                        <td>{item.total_sold} {item.unit}</td>
+                        <td>
+                          <span className={`${s.stockPill} ${stockCls}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                            {item.units_in_stock <= 0 ? <AlertCircle size={12} strokeWidth={2.5}/> : item.units_in_stock <= 2 ? <AlertTriangle size={12} strokeWidth={2.5}/> : <CheckCircle size={12} strokeWidth={2.5}/>} {item.units_in_stock}
+                          </span>
+                        </td>
+                        <td className={s.amountCost}>{fmt(item.total_invested)}</td>
+                        <td>
+                          <div style={{ display: 'flex', gap: 6 }}>
+                            <button onClick={() => handleItemEditSubmit(item.id)} disabled={submitting}
+                              style={{ padding: '5px 10px', borderRadius: 6, border: 'none', background: '#16a34a', color: '#fff', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              {submitting ? '⏳' : <><Check size={13} /> Save</>}
+                            </button>
+                            <button onClick={cancelItemEdit}
+                              style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #e0dbd5', background: '#fff', color: '#666', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <X size={13} /> Cancel
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
                   return (
                     <tr key={item.id}>
                       <td><strong style={{ color: '#1a1209' }}>{item.name}</strong></td>
@@ -517,6 +595,18 @@ export default function PurchasesPage() {
                         </span>
                       </td>
                       <td className={s.amountCost}>{fmt(item.total_invested)}</td>
+                      <td>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button onClick={() => startItemEdit(item)}
+                            style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #d6c8bc', background: '#fff', color: '#6b4c2a', fontSize: 12, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Pencil size={13} /> Edit
+                          </button>
+                          <button onClick={() => handleItemDelete(item.id)} disabled={deletingItemId === item.id}
+                            className={s.deleteBtn} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            {deletingItemId === item.id ? '⏳' : <Trash2 size={14} strokeWidth={2} />} Delete
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                   );
                 })}
