@@ -1,6 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { Trash2, Edit, Check, X, Plus } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Trash2, Edit, Check, X, Plus, Search, ArrowUpDown } from 'lucide-react';
 import styles from '../admin.module.css';
 
 const TABS = {
@@ -36,6 +36,8 @@ export default function AdminCategoriesPage() {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', slug: '' });
   const [newForm, setNewForm] = useState({ name: '', slug: '' });
+  const [search, setSearch]   = useState('');
+  const [sortBy, setSortBy]   = useState('name-asc');
 
   // Modal attributes list popup state
   const [modalItem, setModalItem] = useState(null);
@@ -46,7 +48,29 @@ export default function AdminCategoriesPage() {
     fetchItems();
     setAdding(false);
     setEditingId(null);
+    setSearch('');
+    setSortBy('name-asc');
   }, [activeTab]);
+
+  const filteredItems = useMemo(() => {
+    let list = [...items];
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      list = list.filter(i => i.name.toLowerCase().includes(q) || i.slug.toLowerCase().includes(q));
+    }
+    const [field, dir] = sortBy.split('-');
+    list.sort((a, b) => {
+      let av, bv;
+      if (field === 'name')     { av = a.name.toLowerCase(); bv = b.name.toLowerCase(); }
+      else if (field === 'id')  { av = a.id; bv = b.id; }
+      else if (field === 'date'){ av = new Date(a.created_at || 0).getTime(); bv = new Date(b.created_at || 0).getTime(); }
+      else if (field === 'products') { av = a.product_count || 0; bv = b.product_count || 0; }
+      if (av < bv) return dir === 'asc' ? -1 : 1;
+      if (av > bv) return dir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return list;
+  }, [items, search, sortBy]);
 
   const showToast = (msg, type = 'success') => {
     setToast({ msg, type });
@@ -229,6 +253,51 @@ export default function AdminCategoriesPage() {
         })}
       </div>
 
+      {/* Search + Sort toolbar */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ position: 'relative', flex: '1 1 220px', minWidth: 180 }}>
+          <Search size={15} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9c8a7a', pointerEvents: 'none' }} />
+          <input
+            type="text"
+            placeholder={`Search ${TABS[activeTab].label.toLowerCase()}…`}
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{
+              width: '100%', paddingLeft: 34, paddingRight: 10, paddingTop: 8, paddingBottom: 8,
+              borderRadius: 8, border: '1.5px solid #e0dbd5', fontSize: 13.5,
+              background: '#fff', color: '#1a1209', outline: 'none', boxSizing: 'border-box',
+            }}
+          />
+          {search && (
+            <button onClick={() => setSearch('')} style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#9c8a7a', display: 'flex', padding: 0 }}>
+              <X size={14} />
+            </button>
+          )}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <ArrowUpDown size={14} style={{ color: '#9c8a7a' }} />
+          <select
+            value={sortBy}
+            onChange={e => setSortBy(e.target.value)}
+            style={{ padding: '8px 10px', borderRadius: 8, border: '1.5px solid #e0dbd5', fontSize: 13, background: '#fff', color: '#1a1209', cursor: 'pointer' }}
+          >
+            <option value="name-asc">Name A → Z</option>
+            <option value="name-desc">Name Z → A</option>
+            <option value="id-asc">ID Low → High</option>
+            <option value="id-desc">ID High → Low</option>
+            <option value="products-desc">Most Products</option>
+            <option value="products-asc">Fewest Products</option>
+            <option value="date-desc">Newest First</option>
+            <option value="date-asc">Oldest First</option>
+          </select>
+        </div>
+        {search && (
+          <span style={{ fontSize: 12, color: '#9c8a7a', fontWeight: 600 }}>
+            {filteredItems.length} of {items.length} shown
+          </span>
+        )}
+      </div>
+
       {adding && (
         <form onSubmit={handleAddSubmit} className={styles.formCard} style={{ marginBottom: 24, padding: '20px' }}>
           <div className={styles.formSectionTitle}>Add New {TABS[activeTab].singular}</div>
@@ -275,6 +344,12 @@ export default function AdminCategoriesPage() {
             <div className={styles.emptyTitle}>No {TABS[activeTab].label.toLowerCase()} yet</div>
             <div className={styles.emptySubtitle}>Create a {TABS[activeTab].singular.toLowerCase()} to organize your products.</div>
           </div>
+        ) : filteredItems.length === 0 ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyIcon}>🔍</div>
+            <div className={styles.emptyTitle}>No results for &ldquo;{search}&rdquo;</div>
+            <div className={styles.emptySubtitle}>Try a different name or clear the search.</div>
+          </div>
         ) : (
           <div className={styles.tableWrapper}>
             <table className={styles.table}>
@@ -289,7 +364,7 @@ export default function AdminCategoriesPage() {
                 </tr>
               </thead>
               <tbody>
-                {items.map(item => (
+                {filteredItems.map(item => (
                   <tr key={item.id}>
                     <td style={{ color: '#b0a8a0', fontSize: 12, fontWeight: 600 }}>#{item.id}</td>
                     
