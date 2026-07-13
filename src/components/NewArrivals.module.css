@@ -184,7 +184,17 @@
 }
 
 @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 500px) {
-  .grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+@media (max-width: 600px) {
+  .section { padding: var(--spacing-2xl) 0; }
+  .header { margin-bottom: var(--spacing-xl); }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md); }
+  .cardContent { padding: var(--spacing-md); }
+  .cardName { font-size: 1rem; line-height: 1.25; margin-bottom: 6px; }
+  .cardCategory { font-size: 9px; letter-spacing: 1px; }
+  .cardPrice { font-size: 14px; }
+  .cardOriginal { font-size: 12px; }
+  .cardActions { flex-direction: column; gap: 6px; margin-top: var(--spacing-sm); }
+  .actionBtnOutline, .actionBtnSolid { padding: 9px 0; font-size: 10px; letter-spacing: 0.5px; }
   .viewAll { position: static; margin-top: var(--spacing-md); }
 }
+@media (max-width: 360px) { .grid { gap: var(--spacing-sm); } }

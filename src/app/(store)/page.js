@@ -11,9 +11,9 @@ export default function Home() {
     <div className={styles.homePage}>
       <HeroSlider />
       <FeaturedCategories />
-      <AllProducts />
-      <BrandStory />
       <NewArrivals />
+      <BrandStory />
+      <AllProducts />
       <InstagramFeed />
     </div>
   );

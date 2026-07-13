@@ -415,3 +415,40 @@
   .productLayout { grid-template-columns: 1fr; gap: var(--spacing-xl); }
   .relatedGrid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Sticky mobile add-to-cart bar */
+.stickyBar { display: none; }
+@media (max-width: 768px) {
+  .page { padding-bottom: 88px; }
+  .stickyBar {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 900;
+    padding: 12px var(--spacing-md);
+    padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--color-border);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  }
+  .stickyInfo { display: flex; flex-direction: column; line-height: 1.15; flex-shrink: 0; }
+  .stickyPrice { font-size: 1.2rem; font-weight: 700; color: var(--color-primary); }
+  .stickyOriginal { font-size: 12px; color: var(--color-text-light); text-decoration: line-through; }
+  .stickyBtn {
+    flex: 1;
+    padding: 15px 20px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-base);
+  }
+  .stickyBtn:active { background: var(--color-primary-dark); }
+}

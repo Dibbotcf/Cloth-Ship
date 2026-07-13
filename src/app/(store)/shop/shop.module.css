@@ -274,6 +274,17 @@
   .filterToggle { display: block; }
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 500px) {
-  .grid { grid-template-columns: 1fr; }
+@media (max-width: 600px) {
+  .pageHeader { padding: var(--spacing-md) var(--spacing-md) var(--spacing-lg); }
+  .layout { padding: var(--spacing-md); gap: var(--spacing-lg); }
+  .toolbar { padding: 0 var(--spacing-md) var(--spacing-md); }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md); }
+  .cardContent { padding: var(--spacing-md); }
+  .cardName { font-size: 1rem; line-height: 1.25; margin-bottom: 6px; }
+  .cardCategory { font-size: 9px; letter-spacing: 1px; }
+  .cardPrice { font-size: 14px; }
+  .cardOriginal { font-size: 12px; }
+  .cardActions { flex-direction: column; gap: 6px; margin-top: var(--spacing-sm); }
+  .actionBtnOutline, .actionBtnSolid { padding: 9px 0; font-size: 10px; letter-spacing: 0.5px; }
 }
+@media (max-width: 360px) { .grid { gap: var(--spacing-sm); } }

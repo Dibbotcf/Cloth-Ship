@@ -184,7 +184,39 @@
 }
 
 @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 500px) {
-  .grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+@media (max-width: 600px) {
+  .section { padding: var(--spacing-2xl) 0; }
+  .header { margin-bottom: var(--spacing-xl); }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: var(--spacing-md); }
+  .cardContent { padding: var(--spacing-md); }
+  .cardName { font-size: 1rem; line-height: 1.25; margin-bottom: 6px; }
+  .cardCategory { font-size: 9px; letter-spacing: 1px; }
+  .cardPrice { font-size: 14px; }
+  .cardOriginal { font-size: 12px; }
+  .cardActions { flex-direction: column; gap: 6px; margin-top: var(--spacing-sm); }
+  .actionBtnOutline, .actionBtnSolid { padding: 9px 0; font-size: 10px; letter-spacing: 0.5px; }
   .viewAll { position: static; margin-top: var(--spacing-md); }
+}
+@media (max-width: 360px) { .grid { gap: var(--spacing-sm); } }
+
+/* Bottom "view all" CTA */
+.viewAllWrap { display: flex; justify-content: center; margin-top: var(--spacing-3xl); }
+.viewAllBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 14px 40px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-base);
+}
+.viewAllBtn:hover { background: var(--color-primary); color: var(--color-white); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+@media (max-width: 600px) {
+  .viewAllWrap { margin-top: var(--spacing-xl); }
+  .viewAllBtn { width: 100%; justify-content: center; }
 }

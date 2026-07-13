@@ -311,6 +311,17 @@ export default function ProductDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Sticky mobile add-to-cart bar */}
+      <div className={styles.stickyBar}>
+        <div className={styles.stickyInfo}>
+          <span className={styles.stickyPrice}>৳{parseFloat(product.price).toLocaleString()}</span>
+          {product.original_price && parseFloat(product.original_price) > parseFloat(product.price) && (
+            <span className={styles.stickyOriginal}>৳{parseFloat(product.original_price).toLocaleString()}</span>
+          )}
+        </div>
+        <button className={styles.stickyBtn} onClick={addToCart}>Add to Cart</button>
+      </div>
     </div>
   );
 }

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import styles from './AllProducts.module.css';
 import ProductCardImage from './ProductCardImage';
 
+const PREVIEW_COUNT = 8;
+
 export default function AllProducts() {
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,10 +48,11 @@ export default function AllProducts() {
       <div className={styles.container}>
         <div className={styles.header}>
           <span className={styles.label}>Explore Everything</span>
-          <h2 className={styles.title}>All Products</h2>
+          <h2 className={styles.title}>Shop The Collection</h2>
+          <Link href="/shop" className={styles.viewAll}>View All →</Link>
         </div>
         <div className={styles.grid}>
-          {allProducts.map(product => (
+          {allProducts.slice(0, PREVIEW_COUNT).map(product => (
             <div key={product.id} className={styles.card} id={`product-card-${product.id}`}>
               <Link href={`/product/${product.slug}`} className={styles.cardLinkOverlay} aria-label={`View ${product.name}`} />
               <div className={styles.cardImageWrap}>
@@ -78,6 +81,11 @@ export default function AllProducts() {
             </div>
           ))}
         </div>
+        {allProducts.length > PREVIEW_COUNT && (
+          <div className={styles.viewAllWrap}>
+            <Link href="/shop" className={styles.viewAllBtn}>View All Products →</Link>
+          </div>
+        )}
       </div>
     </section>
   );

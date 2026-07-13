@@ -64,6 +64,7 @@
   align-items: center;
   gap: var(--spacing-sm);
   text-decoration: none;
+  flex-shrink: 0;
 }
 .logo:hover { color: inherit; }
 .logoImg {
@@ -81,6 +82,7 @@
   font-weight: 600;
   color: var(--color-primary-dark);
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 /* Nav Right */
@@ -296,8 +298,13 @@
   .navLeft, .navRight .navLink { display: none; }
   .hamburger { display: flex; }
   .navRight .navLink { display: none; }
+  /* Hamburger + logo on the left, icons on the right */
+  .hamburger { order: -1; margin-right: var(--spacing-xs); }
+  .logo { margin-right: auto; }
 }
 @media (max-width: 480px) {
-  .logoName { font-size: 1.2rem; }
+  .logoName { font-size: 1.25rem; }
   .logoImg { height: 36px; width: 36px; }
+  .navRight { gap: 2px; }
+  .iconBtn { width: 38px; height: 38px; }
 }
