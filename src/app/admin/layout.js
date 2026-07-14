@@ -4,9 +4,9 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import styles from './admin.module.css';
 
-import { 
-  LayoutDashboard, Shirt, Package, BookOpen, 
-  Banknote, ShoppingBag, TrendingUp, Anchor, LogOut, FolderTree
+import {
+  LayoutDashboard, Shirt, Package, BookOpen,
+  Banknote, ShoppingBag, TrendingUp, Anchor, LogOut, FolderTree, Star
 } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
@@ -41,6 +41,7 @@ export default function AdminLayout({ children }) {
     { href: '/admin/products', icon: <Shirt size={18} strokeWidth={1.5} />, label: 'Products', exact: false },
     { href: '/admin/categories', icon: <FolderTree size={18} strokeWidth={1.5} />, label: 'Categories', exact: false },
     { href: '/admin/orders', icon: <Package size={18} strokeWidth={1.5} />, label: 'Orders', exact: false },
+    { href: '/admin/stories', icon: <Star size={18} strokeWidth={1.5} />, label: 'Stories', exact: false },
   ];
 
   const ledgerNavItems = [

@@ -51,6 +51,7 @@ const [mobileOpen, setMobileOpen] = useState(false);
             <Link href="/shop?gender=women" className={styles.navLink}>Women</Link>
             <Link href="/shop?gender=men" className={styles.navLink}>Men</Link>
             <Link href="/shop?collection=spring-voyage" className={styles.navLink}>Collections</Link>
+            <Link href="/stories" className={styles.navLink}>Stories</Link>
           </nav>
 
           {/* Logo */}
@@ -101,6 +102,7 @@ const [mobileOpen, setMobileOpen] = useState(false);
           <Link href="/shop?gender=women" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Women</Link>
           <Link href="/shop?gender=men" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Men</Link>
           <Link href="/shop?collection=spring-voyage" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Collections</Link>
+          <Link href="/stories" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Stories</Link>
           <Link href="/about" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>About Us</Link>
           <Link href="/contact" className={styles.mobileNavLink} onClick={() => setMobileOpen(false)}>Contact Us</Link>
         </nav>
