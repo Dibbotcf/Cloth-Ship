@@ -71,7 +71,7 @@ export default function Footer() {
             {/* Brand */}
             <div className={styles.footerCol}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                <img src="/images/brand/logo.jpeg" alt="Cloth Ship Logo" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+                <img src="/images/brand/logo.jpeg" alt="Cloth Ship Logo" loading="lazy" decoding="async" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                 <h4 className={styles.footerBrand} style={{ margin: 0 }}>Cloth Ship</h4>
               </div>
               <p className={styles.footerTagline}>Tradition with a Modern Twist</p>

@@ -5,21 +5,21 @@ import styles from './HeroSlider.module.css';
 
 const slides = [
   {
-    image: '/images/hero/slide1.png',
+    image: '/images/hero/slide1.webp',
     subtitle: 'New Collection 2026',
     title: 'Elegance Woven\nIn Tradition',
     cta: 'Shop Women',
     href: '/shop?gender=women',
   },
   {
-    image: '/images/hero/slide2.png',
+    image: '/images/hero/slide2.webp',
     subtitle: 'Heritage Menswear',
     title: 'The Modern\nGentleman',
     cta: 'Shop Men',
     href: '/shop?gender=men',
   },
   {
-    image: '/images/hero/slide3.png',
+    image: '/images/hero/slide3.webp',
     subtitle: 'Spring Voyage Collection',
     title: 'Crafted With\nPassion',
     cta: 'Explore Collection',

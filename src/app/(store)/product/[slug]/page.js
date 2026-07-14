@@ -280,7 +280,7 @@ export default function ProductDetailPage() {
             {related.map(p => (
               <Link key={p.id} href={`/product/${p.slug}`} className={styles.relatedCard}>
                 <div className={styles.relatedImageWrap}>
-                  <img src={p.image} alt={p.name} className={styles.relatedImg} />
+                  <img src={p.image} alt={p.name} className={styles.relatedImg} loading="lazy" decoding="async" />
                 </div>
                 <div className={styles.relatedInfo}>
                   <span className={styles.relatedName}>{p.name}</span>

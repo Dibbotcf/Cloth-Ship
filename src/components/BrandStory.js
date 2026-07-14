@@ -7,7 +7,7 @@ export default function BrandStory() {
         <div className={styles.grid}>
           <div className={styles.imageCol}>
             <div className={styles.imageWrapper}>
-              <img src="/images/brand/story.png" alt="The art of weaving at Cloth Ship" className={styles.image} />
+              <img src="/images/brand/story.webp" alt="The art of weaving at Cloth Ship" className={styles.image} loading="lazy" decoding="async" />
               <div className={styles.imageAccent} />
             </div>
           </div>

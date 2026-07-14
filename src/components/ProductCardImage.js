@@ -50,6 +50,8 @@ export default function ProductCardImage({ product, className }) {
         src={images[currentIndex]}
         alt={product.name || 'Product'}
         className={`${styles.img} ${fadeState} ${className || ''}`}
+        loading="lazy"
+        decoding="async"
       />
     </div>
   );

@@ -20,7 +20,7 @@ export default function AboutPage() {
         <div className={styles.container}>
           <div className={styles.storyGrid}>
             <div>
-              <img src="/images/brand/story.png" alt="Our heritage" className={styles.storyImage} />
+              <img src="/images/brand/story.webp" alt="Our heritage" className={styles.storyImage} loading="lazy" decoding="async" />
             </div>
             <div className={styles.storyContent}>
               <h2>The Maritime Heritage</h2>

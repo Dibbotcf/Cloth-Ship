@@ -12,7 +12,7 @@ export default function FeaturedCategories() {
         <div className={styles.grid}>
           <Link href="/shop?gender=women" className={styles.card} id="category-women">
             <div className={styles.cardImage}>
-              <img src="/images/categories/women.png" alt="Women's Collection" />
+              <img src="/images/categories/women.webp" alt="Women's Collection" loading="lazy" decoding="async" />
               <div className={styles.cardOverlay} />
             </div>
             <div className={styles.cardContent}>
@@ -23,7 +23,7 @@ export default function FeaturedCategories() {
           </Link>
           <Link href="/shop?gender=men" className={styles.card} id="category-men">
             <div className={styles.cardImage}>
-              <img src="/images/categories/men.png" alt="Men's Collection" />
+              <img src="/images/categories/men.webp" alt="Men's Collection" loading="lazy" decoding="async" />
               <div className={styles.cardOverlay} />
             </div>
             <div className={styles.cardContent}>
