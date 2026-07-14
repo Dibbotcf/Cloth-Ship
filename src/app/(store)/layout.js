@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingContact from "@/components/FloatingContact";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function StoreLayout({ children }) {
   return (
@@ -9,6 +10,7 @@ export default function StoreLayout({ children }) {
       <main>{children}</main>
       <Footer />
       <FloatingContact />
+      <MobileBottomNav />
     </>
   );
 }
