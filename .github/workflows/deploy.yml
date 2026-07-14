@@ -59,6 +59,15 @@ jobs:
             # Restore .env
             [ -f ~/.cloth-ship.env ] && cp ~/.cloth-ship.env ~/Cloth-Ship/.env
 
+            # Persist admin-uploaded product images OUTSIDE the app dir so they
+            # survive the rm -rf above. Seed the store with committed images
+            # (uploads have unique timestamped names, so they never collide),
+            # then symlink the build's images dir to the persistent store.
+            mkdir -p ~/uploads/products
+            cp -rf ~/Cloth-Ship/public/images/products/. ~/uploads/products/ 2>/dev/null || true
+            rm -rf ~/Cloth-Ship/public/images/products
+            ln -sfn ~/uploads/products ~/Cloth-Ship/public/images/products
+
             cd ~/Cloth-Ship
             PORT=3000 pm2 start server.js --name "cloth-ship"
             pm2 save
