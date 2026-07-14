@@ -1,15 +1,25 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from './Header.module.css';
 
 
 export default function Header() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
 const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    setSearchOpen(false);
+    setSearchQuery('');
+    router.push(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop');
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -71,10 +81,11 @@ const [mobileOpen, setMobileOpen] = useState(false);
         {/* Search overlay */}
         {searchOpen && (
           <div className={styles.searchOverlay}>
-            <div className={styles.searchInner}>
+            <form className={styles.searchInner} onSubmit={handleSearch}>
               <input type="text" placeholder="Search for sarees, panjabis, kurtas..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className={styles.searchInput} autoFocus id="search-input" />
-              <button className={styles.searchClose} onClick={() => { setSearchOpen(false); setSearchQuery(''); }}>✕</button>
-            </div>
+              <button type="submit" className={styles.searchGo} aria-label="Search">Search</button>
+              <button type="button" className={styles.searchClose} onClick={() => { setSearchOpen(false); setSearchQuery(''); }} aria-label="Close search">✕</button>
+            </form>
           </div>
         )}
       </header>

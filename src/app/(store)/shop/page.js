@@ -62,14 +62,20 @@ function ShopContent() {
     return [...seen].sort();
   }, [baseFiltered]);
 
+  const q = (searchParams.get('q') || '').trim().toLowerCase();
+
   const filtered = useMemo(() => {
     let result = [...baseFiltered];
     if (filters.fabric) result = result.filter(p => p.fabric === filters.fabric);
     if (filters.occasion) result = result.filter(p => p.occasion === filters.occasion);
+    if (q) result = result.filter(p =>
+      [p.name, p.category, p.fabric, p.occasion, p.description]
+        .filter(Boolean).some(v => String(v).toLowerCase().includes(q))
+    );
     if (filters.sort === 'price-low') result.sort((a, b) => a.price - b.price);
     if (filters.sort === 'price-high') result.sort((a, b) => b.price - a.price);
     return result;
-  }, [baseFiltered, filters.fabric, filters.occasion, filters.sort]);
+  }, [baseFiltered, filters.fabric, filters.occasion, filters.sort, q]);
 
   const addToCart = (product, redirectUrl = '/cart') => {
     const cart = JSON.parse(localStorage.getItem('clothship_cart') || '[]');
@@ -98,8 +104,8 @@ function ShopContent() {
       </div>
 
       <div className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>Shop All</h1>
-        <p className={styles.pageDesc}>Discover our curated collection of traditional attire with a modern twist</p>
+        <h1 className={styles.pageTitle}>{q ? 'Search Results' : 'Shop All'}</h1>
+        <p className={styles.pageDesc}>{q ? `Showing matches for “${searchParams.get('q')}”` : 'Discover our curated collection of traditional attire with a modern twist'}</p>
       </div>
 
       <div className={styles.toolbar}>

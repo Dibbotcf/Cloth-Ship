@@ -224,6 +224,20 @@
   transition: border-color var(--transition-fast);
 }
 .searchInput:focus { border-color: var(--color-primary); }
+.searchGo {
+  padding: 12px 22px;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  white-space: nowrap;
+}
+.searchGo:hover { background: var(--color-primary-dark); }
 .searchClose {
   font-size: 18px;
   color: var(--color-text-light);
