@@ -10,10 +10,10 @@ export default function Home() {
   return (
     <div className={styles.homePage}>
       <HeroSlider />
-      <FeaturedCategories />
       <NewArrivals />
       <BrandStory />
       <AllProducts />
+      <FeaturedCategories />
       <InstagramFeed />
     </div>
   );
